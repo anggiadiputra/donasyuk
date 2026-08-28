@@ -1,0 +1,898 @@
+/* ==========================================================================
+   DonasiYuk Full-Page Admin Mode
+   Hides WP admin chrome, shows custom DonasiYuk sidebar
+   ========================================================================== */
+
+/* ---------- Root Variables ---------- */
+:root {
+    --dyk-sidebar-width: 160px;
+    --dyk-sidebar-collapsed-width: 0px;
+    --dyk-sidebar-bg: #1d2327;
+    --dyk-sidebar-bg-gradient: linear-gradient(180deg, #1d2327 0%, #15181b 100%);
+    --dyk-sidebar-text: #c3c4c7;
+    --dyk-sidebar-text-hover: #ffffff;
+    --dyk-sidebar-hover-bg: rgba(255, 255, 255, 0.08);
+    --dyk-sidebar-active-bg: #2271b1;
+    --dyk-sidebar-active-hover-bg: #135e96;
+    --dyk-sidebar-active-text: #ffffff;
+    --dyk-sidebar-active-border: #2271b1;
+    --dyk-sidebar-active-shadow: 0 2px 6px rgba(34, 113, 177, 0.35);
+    --dyk-sidebar-divider: rgba(255, 255, 255, 0.08);
+    --dyk-sidebar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --dyk-topbar-height: 0px;
+    --dyk-brand-icon-bg: linear-gradient(135deg, #2271b1 0%, #135e96 100%);
+    --dyk-back-btn-bg: rgba(34, 113, 177, 0.12);
+    --dyk-back-btn-hover: #2271b1;
+    --dyk-back-btn-text: #72aee6;
+    --dyk-back-btn-border: rgba(34, 113, 177, 0.25);
+    --dyk-shadow-sidebar: 4px 0 24px rgba(0, 0, 0, 0.2);
+    --dyk-overlay-bg: rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- Hide WordPress Chrome ---------- */
+body.dyk-fullpage #adminmenuwrap,
+body.dyk-fullpage #adminmenuback,
+body.dyk-fullpage #adminmenumain,
+body.dyk-fullpage #adminmenu {
+    display: none !important;
+}
+
+body.dyk-fullpage #wpadminbar {
+    display: none !important;
+}
+
+body.dyk-fullpage html {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+body.dyk-fullpage {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+body.dyk-fullpage #wpcontent {
+    margin-left: var(--dyk-sidebar-width) !important;
+    padding-left: 0 !important;
+}
+
+body.dyk-fullpage #wpbody {
+    padding-top: 12px;
+}
+
+body.dyk-fullpage #wpfooter {
+    margin-left: var(--dyk-sidebar-width) !important;
+}
+
+/* ---------- DonasiYuk Sidebar ---------- */
+#dyk-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--dyk-sidebar-width);
+    height: 100vh;
+    background: var(--dyk-sidebar-bg-gradient);
+    box-shadow: var(--dyk-shadow-sidebar);
+    z-index: 99999;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: transform var(--dyk-sidebar-transition), width var(--dyk-sidebar-transition);
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+#dyk-sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+#dyk-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+#dyk-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+}
+
+/* ---------- Sidebar Header / Brand ---------- */
+.dyk-sidebar-brand {
+    display: flex;
+    align-items: center;
+    padding: 14px 12px;
+    gap: 10px;
+    border-bottom: 1px solid var(--dyk-sidebar-divider);
+    flex-shrink: 0;
+    position: relative;
+    transition: padding var(--dyk-sidebar-transition);
+}
+
+.dyk-sidebar-brand-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: var(--dyk-brand-icon-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(34, 113, 177, 0.3);
+}
+
+.dyk-sidebar-brand-icon svg {
+    width: 18px;
+    height: 18px;
+    stroke: #fff;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.dyk-sidebar-brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    transition: opacity 0.2s ease;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.dyk-sidebar-brand-name {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dyk-sidebar-brand-version {
+    font-size: 10.5px;
+    color: var(--dyk-sidebar-text);
+    opacity: 0.65;
+    line-height: 1;
+}
+
+/* ---------- Sidebar Collapse / Expand Button (Above Profile, Right-Aligned) ---------- */
+.dyk-sidebar-footer-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+}
+
+.dyk-sidebar-collapse-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: #94a3b8;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.dyk-sidebar-collapse-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+}
+
+.dyk-sidebar-collapse-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(34, 113, 177, 0.35);
+}
+
+.dyk-sidebar-collapse-btn svg {
+    width: 15px;
+    height: 15px;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    flex-shrink: 0;
+}
+
+.dyk-icon-collapse,
+.dyk-icon-expand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---------- Collapsed / Compact Sidebar Mode ---------- */
+body.dyk-sidebar-collapsed {
+    --dyk-sidebar-width: 68px;
+}
+
+body.dyk-sidebar-collapsed #dyk-sidebar {
+    width: 68px !important;
+}
+
+body.dyk-sidebar-collapsed #wpcontent {
+    margin-left: 68px !important;
+}
+
+body.dyk-sidebar-collapsed #wpfooter {
+    margin-left: 68px !important;
+}
+
+body.dyk-sidebar-collapsed .dyk-sidebar-brand {
+    padding: 16px 8px;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: center;
+}
+
+body.dyk-sidebar-collapsed .dyk-sidebar-brand-text,
+body.dyk-sidebar-collapsed .dyk-sidebar-label,
+body.dyk-sidebar-collapsed .dyk-sidebar-nav li a span,
+body.dyk-sidebar-collapsed .dyk-nav-badge,
+body.dyk-sidebar-collapsed .dyk-back-wp span,
+body.dyk-sidebar-collapsed .dyk-sidebar-footer-info {
+    display: none !important;
+    opacity: 0 !important;
+}
+
+body.dyk-sidebar-collapsed .dyk-back-wp {
+    justify-content: center;
+    padding: 9px 0;
+    margin: 10px 8px 4px 8px;
+}
+
+body.dyk-sidebar-collapsed .dyk-sidebar-nav {
+    padding: 4px 6px;
+}
+
+body.dyk-sidebar-collapsed .dyk-sidebar-nav li a {
+    justify-content: center;
+    padding: 10px 0;
+    border-radius: 8px;
+    position: relative;
+}
+
+body.dyk-sidebar-collapsed .dyk-sidebar-footer {
+    padding: 12px 6px;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+body.dyk-sidebar-collapsed .dyk-sidebar-footer-header {
+    justify-content: center;
+    width: 100%;
+}
+
+body.dyk-sidebar-collapsed .dyk-sidebar-collapse-btn {
+    margin: 0 auto;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+body.dyk-sidebar-collapsed .dyk-icon-collapse {
+    display: none !important;
+}
+
+body.dyk-sidebar-collapsed .dyk-icon-expand {
+    display: flex !important;
+    justify-content: center;
+    width: auto;
+}
+
+body.dyk-sidebar-collapsed .dyk-sidebar-footer-user {
+    justify-content: center;
+    padding: 4px 0;
+    width: 100%;
+}
+
+/* Floating Tooltip for Collapsed Sidebar */
+body.dyk-sidebar-collapsed .dyk-sidebar-nav li a::after,
+body.dyk-sidebar-collapsed .dyk-back-wp::after,
+body.dyk-sidebar-collapsed .dyk-sidebar-footer-user::after,
+body.dyk-sidebar-collapsed .dyk-sidebar-collapse-btn::after {
+    content: attr(data-dyk-tooltip);
+    position: fixed;
+    left: 76px;
+    background: #0f172a;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    z-index: 100000;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+body.dyk-sidebar-collapsed .dyk-sidebar-nav li a:hover::after,
+body.dyk-sidebar-collapsed .dyk-back-wp:hover::after,
+body.dyk-sidebar-collapsed .dyk-sidebar-footer-user:hover::after,
+body.dyk-sidebar-collapsed .dyk-sidebar-collapse-btn:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(4px);
+}
+
+/* ---------- Back to WP Button ---------- */
+.dyk-back-wp {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 8px 4px 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: var(--dyk-back-btn-bg);
+    color: var(--dyk-back-btn-text);
+    text-decoration: none;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid var(--dyk-back-btn-border);
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dyk-back-wp:hover {
+    background: var(--dyk-back-btn-hover);
+    color: #ffffff;
+    border-color: var(--dyk-back-btn-hover);
+    text-decoration: none;
+    transform: translateX(-2px);
+}
+
+.dyk-back-wp:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(34, 113, 177, 0.4);
+}
+
+.dyk-back-wp svg {
+    width: 15px;
+    height: 15px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.dyk-back-wp:hover svg {
+    transform: translateX(-3px);
+}
+
+/* ---------- Sidebar Section Label ---------- */
+.dyk-sidebar-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--dyk-sidebar-text);
+    opacity: 0.5;
+    padding: 12px 12px 4px 12px;
+    flex-shrink: 0;
+}
+
+/* ---------- Sidebar Navigation ---------- */
+.dyk-sidebar-nav {
+    list-style: none;
+    margin: 0;
+    padding: 4px 6px;
+    flex: 1;
+}
+
+.dyk-sidebar-nav li {
+    margin: 2px 0;
+}
+
+.dyk-sidebar-nav li a {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    color: var(--dyk-sidebar-text);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 450;
+    transition: all 0.15s ease;
+    position: relative;
+    line-height: 1.4;
+}
+
+.dyk-sidebar-nav li a span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dyk-sidebar-nav li a:hover {
+    background: var(--dyk-sidebar-hover-bg);
+    color: var(--dyk-sidebar-text-hover);
+    text-decoration: none;
+}
+
+.dyk-sidebar-nav li a:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 1px rgba(34, 113, 177, 0.4);
+}
+
+.dyk-sidebar-nav li.dyk-nav-active a {
+    background: var(--dyk-sidebar-active-bg, #2271b1) !important;
+    color: var(--dyk-sidebar-active-text, #ffffff) !important;
+    font-weight: 600;
+    box-shadow: var(--dyk-sidebar-active-shadow, 0 2px 6px rgba(34, 113, 177, 0.35));
+}
+
+.dyk-sidebar-nav li.dyk-nav-active a:hover {
+    background: var(--dyk-sidebar-active-hover-bg, #135e96) !important;
+    color: #ffffff !important;
+}
+
+.dyk-sidebar-nav li a svg,
+.dyk-sidebar-nav li a .dyk-nav-icon {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    flex-shrink: 0;
+    opacity: 0.85;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: opacity 0.15s ease;
+}
+
+.dyk-sidebar-nav li a:hover svg,
+.dyk-sidebar-nav li a:hover .dyk-nav-icon {
+    opacity: 1;
+}
+
+.dyk-sidebar-nav li.dyk-nav-active a svg,
+.dyk-sidebar-nav li.dyk-nav-active a .dyk-nav-icon {
+    opacity: 1;
+    stroke: #ffffff !important;
+}
+
+.dyk-sidebar-nav li a .dyk-nav-badge {
+    margin-left: auto;
+    background: rgba(214, 54, 56, 0.25);
+    color: #f87171;
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 8px;
+    line-height: 1.4;
+    min-width: 16px;
+    text-align: center;
+}
+
+/* ---------- Sidebar Divider ---------- */
+.dyk-sidebar-divider {
+    height: 1px;
+    background: var(--dyk-sidebar-divider);
+    margin: 6px 8px;
+    flex-shrink: 0;
+}
+
+/* ---------- Sidebar Footer ---------- */
+.dyk-sidebar-footer {
+    padding: 10px 8px 14px 8px;
+    border-top: 1px solid var(--dyk-sidebar-divider);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.dyk-sidebar-footer-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+    width: 100%;
+    min-width: 0;
+}
+
+.dyk-sidebar-footer-user:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.dyk-sidebar-footer-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.08);
+}
+
+.dyk-sidebar-footer-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.dyk-sidebar-footer-name {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #e2e4ef;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dyk-sidebar-footer-role {
+    font-size: 10.5px;
+    color: var(--dyk-sidebar-text);
+    opacity: 0.6;
+    text-transform: capitalize;
+}
+
+/* ---------- Page Header & Title Alignment (No Stacking/Overlap) ---------- */
+body.dyk-fullpage .page-title-box .page-title,
+.page-title-box .page-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    line-height: 32px !important;
+}
+
+body.dyk-fullpage .page-title-box .page-title i,
+body.dyk-fullpage .page-title-box .page-title svg,
+.page-title-box .page-title i,
+.page-title-box .page-title svg {
+    color: #475569 !important;
+    width: 18px !important;
+    height: 18px !important;
+    position: static !important;
+    margin: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+}
+
+body.dyk-fullpage .dash-title,
+.dash-title {
+    margin: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+/* =========================================================================
+   MODERN UNIFIED TOGGLE SWITCH DESIGN (Globally applied)
+   ========================================================================= */
+.custom-switch {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    padding-left: 44px !important;
+    min-height: 22px !important;
+    vertical-align: middle !important;
+    cursor: pointer !important;
+    user-select: none !important;
+}
+.custom-switch .custom-control-input {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 36px !important;
+    height: 20px !important;
+    z-index: 1 !important;
+    opacity: 0 !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+}
+.custom-switch .custom-control-label {
+    position: relative !important;
+    margin-bottom: 0 !important;
+    vertical-align: middle !important;
+    cursor: pointer !important;
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
+    user-select: none !important;
+    line-height: 20px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    padding-top: 0 !important;
+}
+.custom-switch .custom-control-label::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0px !important;
+    left: -44px !important;
+    width: 36px !important;
+    height: 20px !important;
+    pointer-events: none !important;
+    border-radius: 9999px !important;
+    background-color: #cbd5e1 !important;
+    border: 1px solid rgba(0, 0, 0, 0.04) !important;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08) !important;
+    transition: background-color 0.22s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.custom-switch .custom-control-label::after {
+    content: "" !important;
+    position: absolute !important;
+    top: 2px !important;
+    left: -42px !important;
+    width: 16px !important;
+    height: 16px !important;
+    background-color: #ffffff !important;
+    border-radius: 50% !important;
+    pointer-events: none !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.12) !important;
+    transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.22s ease !important;
+}
+.custom-switch:hover .custom-control-label::before {
+    background-color: #94a3b8 !important;
+}
+.custom-switch .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: #2563eb !important;
+    border-color: #1d4ed8 !important;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1) !important;
+}
+.custom-switch .custom-control-input:checked ~ .custom-control-label::after {
+    background-color: #ffffff !important;
+    transform: translateX(16px) !important;
+}
+.custom-switch .custom-control-input:checked ~ .custom-control-label {
+    color: #1e293b !important;
+}
+.custom-switch .custom-control-input:focus ~ .custom-control-label::before {
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2) !important;
+}
+
+/* Payment Status Specific Toggle Styling (Dashboard & Tables) */
+.set_payment .custom-control-label span {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    margin-left: 2px !important;
+    line-height: 20px !important;
+}
+.set_payment.received .custom-control-input:checked ~ .custom-control-label::before,
+.set_payment .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: #16a34a !important;
+    border-color: #15803d !important;
+}
+.set_payment.received .custom-control-label,
+.set_payment.received .custom-control-label span,
+.set_payment .custom-control-input:checked ~ .custom-control-label,
+.set_payment .custom-control-input:checked ~ .custom-control-label span {
+    color: #16a34a !important;
+    font-weight: 600 !important;
+}
+.set_payment.waiting .custom-control-input ~ .custom-control-label::before {
+    background-color: #cbd5e1 !important;
+    border-color: #94a3b8 !important;
+}
+.set_payment.waiting .custom-control-label,
+.set_payment.waiting .custom-control-label span {
+    color: #64748b !important;
+    font-weight: 600 !important;
+}
+
+/* ---------- Mobile Toggle Button ---------- */
+.dyk-sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 100000;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--dyk-sidebar-bg);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+}
+
+.dyk-sidebar-toggle:hover {
+    background: #252840;
+}
+
+.dyk-sidebar-toggle svg {
+    width: 20px;
+    height: 20px;
+    stroke: #fff;
+    fill: none;
+    stroke-width: 2;
+}
+
+/* ---------- Mobile Overlay ---------- */
+.dyk-sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--dyk-overlay-bg);
+    z-index: 99998;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(2px);
+}
+
+.dyk-sidebar-overlay.dyk-visible {
+    opacity: 1;
+}
+
+/* ---------- Responsive (Mobile/Tablet) ---------- */
+@media screen and (max-width: 960px) {
+    body.dyk-fullpage #wpcontent {
+        margin-left: 0 !important;
+    }
+
+    body.dyk-fullpage #wpfooter {
+        margin-left: 0;
+    }
+
+    #dyk-sidebar {
+        transform: translateX(-100%);
+    }
+
+    #dyk-sidebar.dyk-sidebar-open {
+        transform: translateX(0);
+    }
+
+    .dyk-sidebar-toggle {
+        display: flex;
+    }
+
+    .dyk-sidebar-overlay {
+        display: block;
+        pointer-events: none;
+    }
+
+    .dyk-sidebar-overlay.dyk-visible {
+        pointer-events: auto;
+    }
+}
+
+/* ---------- Solid Content Display (No Flicker / No Shift) ---------- */
+body.dyk-fullpage #wpcontent {
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+/* ---------- Adjust admin notices ---------- */
+body.dyk-fullpage .notice,
+body.dyk-fullpage .updated,
+body.dyk-fullpage .error,
+body.dyk-fullpage .update-nag {
+    margin-left: 0 !important;
+}
+
+/* ---------- Screen Options & Help Tabs fix ---------- */
+body.dyk-fullpage #screen-meta-links {
+    margin-top: 0;
+}
+
+/* ---------- Fix #wpbody-content padding ---------- */
+body.dyk-fullpage #wpbody-content {
+    padding-bottom: 40px;
+}
+
+/* ---------- Print: hide sidebar ---------- */
+@media print {
+    #dyk-sidebar,
+    .dyk-sidebar-toggle,
+    .dyk-sidebar-overlay {
+        display: none !important;
+    }
+    body.dyk-fullpage #wpcontent {
+        margin-left: 0 !important;
+    }
+}
+
+/* ---------- Modern 1-Line SweetAlert2 Toast ---------- */
+.swal2-container.swal2-top-end,
+.swal2-container.swal2-top-right,
+.swal2-container.swal2-top {
+    z-index: 99999999 !important;
+    padding: 16px !important;
+}
+
+.swal2-popup.swal2-toast,
+.dyk-swal-toast {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    padding: 10px 16px !important;
+    border-radius: 8px !important;
+    background: #0f172a !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 8px 10px -6px rgba(0, 0, 0, 0.2) !important;
+    gap: 10px !important;
+    width: auto !important;
+    min-width: 260px !important;
+    max-width: 440px !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.swal2-popup.swal2-toast .swal2-icon {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    margin: 0 !important;
+    border-width: 2px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+}
+
+.swal2-popup.swal2-toast .swal2-icon.swal2-success {
+    border-color: #22c55e !important;
+    color: #22c55e !important;
+}
+
+.swal2-popup.swal2-toast .swal2-icon.swal2-success [class^='swal2-success-line'] {
+    background-color: #22c55e !important;
+    height: 2px !important;
+}
+
+.swal2-popup.swal2-toast .swal2-icon.swal2-success .swal2-success-ring {
+    width: 20px !important;
+    height: 20px !important;
+    border-color: rgba(34, 197, 94, 0.3) !important;
+}
+
+.swal2-popup.swal2-toast .swal2-title {
+    color: #f8fafc !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.4 !important;
+    text-align: left !important;
+    flex: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.swal2-popup.swal2-toast .swal2-html-container {
+    color: #cbd5e1 !important;
+    font-size: 12.5px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+}
+
+.swal2-popup.swal2-toast .swal2-timer-progress-bar {
+    background: #22c55e !important;
+    height: 2px !important;
+    border-radius: 0 0 8px 8px !important;
+}
+

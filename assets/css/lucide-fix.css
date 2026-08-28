@@ -1,0 +1,20 @@
+/* DonasiYuk: Lucide icon sizing & color shim. */
+[data-lucide] {
+	width: 1em;
+	height: 1em;
+	display: inline-block;
+	vertical-align: -0.125em;
+	stroke-width: 2;
+}
+[data-lucide].icon-lg,
+.icon-lg > [data-lucide] { width: 2em; height: 2em; }
+.fa-xs, [data-lucide].fa-xs { width: 0.75em; height: 0.75em; }
+.fa-sm, [data-lucide].fa-sm { width: 0.875em; height: 0.875em; }
+.fa-lg, [data-lucide].fa-lg { width: 1.33em; height: 1.33em; }
+.fa-2x, [data-lucide].fa-2x { width: 2em; height: 2em; }
+.fa-3x, [data-lucide].fa-3x { width: 3em; height: 3em; }
+.fa-4x, [data-lucide].fa-4x { width: 4em; height: 4em; }
+.fa-5x, [data-lucide].fa-5x { width: 5em; height: 5em; }
+.fa-fw, [data-lucide].fa-fw { width: 1.28571em; text-align: center; }
+.fa-spin { animation: fa-spin 2s infinite linear; }
+@keyframes fa-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }

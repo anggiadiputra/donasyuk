@@ -1,0 +1,19 @@
+{
+    "name": "donasiyuk/donasiyuk",
+    "description": "DonasiYuk WordPress Donation Plugin",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "DonasiYuk\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DonasiYuk\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=7.4"
+    }
+}
